@@ -16,6 +16,9 @@
         android:theme="@style/Theme.SchoolSystem"
         tools:targetApi="31">
         <activity
+            android:name=".AddCourseActivity"
+            android:exported="false" />
+        <activity
             android:name=".ManageCoursesActivity"
             android:exported="false" />
         <activity

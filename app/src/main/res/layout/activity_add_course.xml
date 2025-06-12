@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <!-- Image -->
+        <ImageView
+            android:id="@+id/addCourseImage"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:src="@drawable/add_course_icon" />
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/addCourseTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Course"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="@android:color/holo_green_dark"
+            android:layout_marginTop="8dp" />
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="12dp"
+            android:background="@android:color/darker_gray" />
+
+        <!-- Course Name -->
+        <EditText
+            android:id="@+id/courseNameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Course Name"
+            android:layout_marginTop="12dp" />
+
+        <!-- Grade Level Selection (dynamic checkboxes will be added programmatically) -->
+        <TextView
+            android:id="@+id/gradeLevelsLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Grade Levels:"
+            android:textStyle="bold"
+            android:layout_marginTop="12dp" />
+
+        <LinearLayout
+            android:id="@+id/gradeLevelsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!-- CheckBoxes سيتم إضافتها هنا برمجياً -->
+        </LinearLayout>
+
+        <!-- Class Selection -->
+        <TextView
+            android:id="@+id/classLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Class:"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <Spinner
+            android:id="@+id/classSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
+
+        <!-- Teacher Selection -->
+        <TextView
+            android:id="@+id/teacherLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Select Teacher:"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp" />
+
+        <Spinner
+            android:id="@+id/teacherSpinner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp" />
+
+        <!-- Submit Button -->
+        <Button
+            android:id="@+id/submitCourseButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create Course"
+            android:layout_marginTop="16dp"
+            android:layout_margin="10dp"
+            android:backgroundTint="@color/purple_700"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+</ScrollView>

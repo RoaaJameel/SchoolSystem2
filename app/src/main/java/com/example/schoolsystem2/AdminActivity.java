@@ -61,9 +61,9 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminActivity.this, ManageStudentsActivity.class))
         );
 
-//        cardCourses.setOnClickListener(v ->
-//                startActivity(new Intent(AdminActivity.this, CoursesActivity.class))
-//        );
+        cardCourses.setOnClickListener(v ->
+                startActivity(new Intent(AdminActivity.this, ManageCoursesActivity.class))
+        );
 
 //        cardSchedules.setOnClickListener(v ->
 //                startActivity(new Intent(AdminActivity.this, ScheduleActivity.class))

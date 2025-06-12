@@ -128,12 +128,16 @@ public class StudentAdapterModification extends RecyclerView.Adapter<StudentAdap
                         params.put("parent_contact", newValue);
                         break;
                     case "Class":
-                        params.put("class_id", newValue); // تأكد أن الـ ID وليس الاسم
+                        params.put("class_id", newValue);
                         break;
                     case "Academic Year":
                         params.put("academic_year", newValue);
                         break;
+                    case "Name":
+                        params.put("name", newValue);
+                        break;
                 }
+
 
                 return params;
             }
