@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="6dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Student Info -->
+        <TextView
+            android:id="@+id/nameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Student Name"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/genderText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gender: " />
+
+        <TextView
+            android:id="@+id/dobText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Date of Birth: " />
+
+        <TextView
+            android:id="@+id/gradeLevelText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Grade Level: " />
+
+        <TextView
+            android:id="@+id/classNameText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Class: " />
+
+        <TextView
+            android:id="@+id/contactText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Parent Contact: " />
+
+        <!-- Row 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/editNameBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Name" />
+
+            <Button
+                android:id="@+id/editGenderBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Gender" />
+
+            <Button
+                android:id="@+id/editDobBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Date of Birth" />
+        </LinearLayout>
+
+        <!-- Row 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:weightSum="3">
+
+            <Button
+                android:id="@+id/editGradeLevelBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Grade Level" />
+
+            <Button
+                android:id="@+id/editClassBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Class" />
+
+            <Button
+                android:id="@+id/editContactBtn"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_margin="4dp"
+                android:layout_height="wrap_content"
+                android:text="Edit Contact" />
+        </LinearLayout>
+    </LinearLayout>
+</androidx.cardview.widget.CardView>
