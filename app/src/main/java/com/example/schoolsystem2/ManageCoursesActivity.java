@@ -40,9 +40,8 @@ public class ManageCoursesActivity extends AppCompatActivity {
     }
 
     public void onViewCoursesClick(View view) {
-        Toast.makeText(this, "View Courses clicked", Toast.LENGTH_SHORT).show();
 
-        // Intent intent = new Intent(this, ViewCoursesActivity.class);
-        // startActivity(intent);
+         Intent intent = new Intent(this, ViewCoursesActivity.class);
+         startActivity(intent);
     }
 }
