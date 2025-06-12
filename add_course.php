@@ -3,8 +3,8 @@ require_once 'DBConnect.php';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $course_name = trim($_POST['course_name']);
-    $grade_levels = $_POST['grade_levels'] ?? []; 
-    $class_teacher_links = $_POST['class_teacher_links'] ?? [];
+    $grade_levels = $_POST['grade_levels'] ?? []; // array of grade_level_id
+    $class_teacher_links = $_POST['class_teacher_links'] ?? []; // array of [class_id, teacher_id]
 
     if (empty($course_name)) {
         echo "Course name is required.";
