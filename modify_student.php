@@ -4,18 +4,17 @@ require 'DBConnect.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $student_id = intval($_POST['student_id']);
 
-    // Get user_id and current class_id for this student
     $stmt = $conn->prepare("SELECT user_id, class_id FROM students WHERE student_id = ?");
     $stmt->bind_param("i", $student_id);
     $stmt->execute();
     $stmt->bind_result($user_id, $current_class_id);
-
     if (!$stmt->fetch()) {
         echo json_encode(["success" => false, "message" => "Student not found."]);
         exit();
     }
     $stmt->close();
 
+    // المدخلات القادمة من التطبيق
     $name           = $_POST['name'] ?? null;
     $gender         = $_POST['gender'] ?? null;
     $dob            = $_POST['date_of_birth'] ?? null;
@@ -27,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $somethingChanged = false;
 
     try {
-        // Update name in users table
+        // ✅ تعديل الاسم في العمود الصحيح
         if ($name) {
             $stmt = $conn->prepare("UPDATE users SET name = ? WHERE user_id = ?");
             $stmt->bind_param("si", $name, $user_id);
@@ -36,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $somethingChanged = true;
         }
 
-        // Update students table
+        // ✅ تحديث جدول الطلاب
         $updates = [];
         $params = [];
         $types = "";
@@ -78,17 +77,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $somethingChanged = true;
         }
 
-        // Reflect class/academic year changes in related tables
-        if ($class_id || $academic_year) {
-            if ($class_id) {
-                $stmt = $conn->prepare("UPDATE marks SET class_id = ? WHERE student_id = ?");
-                $stmt->bind_param("ii", $class_id, $student_id);
-                $stmt->execute();
-                $stmt->close();
-            }
-
-            // academic_year فقط في students وليس مرتبط بجداول أخرى مباشرة
-            // إذا كنت تخزن السنة في جداول أخرى، أضف التعديل حسب الحاجة هنا
+        // ✅ تعديل الجداول المرتبطة
+        if ($class_id) {
+            $stmt = $conn->prepare("UPDATE marks SET class_id = ? WHERE student_id = ?");
+            $stmt->bind_param("ii", $class_id, $student_id);
+            $stmt->execute();
+            $stmt->close();
         }
 
         if ($somethingChanged) {
