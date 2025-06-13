@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2025 at 02:52 AM
+-- Generation Time: Jun 14, 2025 at 01:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -90,7 +90,9 @@ CREATE TABLE `class_course_teachers` (
 
 INSERT INTO `class_course_teachers` (`id`, `class_id`, `course_id`, `teacher_id`) VALUES
 (1, 3, 4, 1),
-(2, 4, 5, 1);
+(2, 4, 5, 1),
+(4, 3, 7, 1),
+(5, 4, 8, 1);
 
 -- --------------------------------------------------------
 
@@ -109,7 +111,9 @@ CREATE TABLE `courses` (
 
 INSERT INTO `courses` (`course_id`, `course_name`) VALUES
 (4, 'e'),
-(5, 'math');
+(5, 'math'),
+(7, 'arabic'),
+(8, 'science');
 
 -- --------------------------------------------------------
 
@@ -129,7 +133,9 @@ CREATE TABLE `grade_courses` (
 
 INSERT INTO `grade_courses` (`id`, `grade_level_id`, `course_id`) VALUES
 (1, 1, 4),
-(2, 2, 5);
+(2, 2, 5),
+(4, 3, 7),
+(5, 4, 8);
 
 -- --------------------------------------------------------
 
@@ -148,7 +154,10 @@ CREATE TABLE `grade_levels` (
 
 INSERT INTO `grade_levels` (`grade_level_id`, `name`) VALUES
 (1, 'Fourth'),
-(2, 'Nineth');
+(2, 'Nineth'),
+(3, 'First'),
+(4, 'second'),
+(5, 'fifth');
 
 -- --------------------------------------------------------
 
@@ -181,6 +190,13 @@ CREATE TABLE `schedules` (
   `start_time` time DEFAULT NULL,
   `end_time` time DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `schedules`
+--
+
+INSERT INTO `schedules` (`schedule_id`, `class_id`, `course_id`, `teacher_id`, `day_of_week`, `start_time`, `end_time`) VALUES
+(1, 3, 4, 1, 'Saturday', '07:00:00', '08:00:00');
 
 -- --------------------------------------------------------
 
@@ -224,7 +240,8 @@ CREATE TABLE `teachers` (
 --
 
 INSERT INTO `teachers` (`teacher_id`, `user_id`, `gender`) VALUES
-(1, 4, 'female');
+(1, 4, 'female'),
+(2, 17, 'female');
 
 -- --------------------------------------------------------
 
@@ -250,11 +267,12 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`user_id`, `username`, `password`, `name`, `email`, `role`, `phone`, `created_at`) VALUES
 (1, 'admin', '$2a$12$64GZsR0o30rkVUEMNruI6Olie7qsICoPbSy5bdX2ZixsDul.YLzOm', 'Admin User', 'admin@example.com', 'admin', '0591763884', '2025-06-09 19:20:00'),
 (2, 'roaaJameel', '$2a$12$vJJm/T5xqCDOu6XNdfkn5eMPOPmL9la04sLbPZKi/G8763afQJF6S', 'Roaa Jameel Ali Ahmad', 'roa@gmail.com', 'student', '0591763884', '2025-06-10 19:36:13'),
-(4, 'roaaTeacher', '$2a$12$rzDlGXwK/qkUch93f0N1EexShZVI/qOyqJNcvxniI/wlTvv8LIXZW', 'roaa', 'roaaTeacher@gmail.com', 'teacher', '0591763884', '2025-06-11 21:25:46'),
+(4, 'teacher', '$2a$12$sM6o9aBVIJ04yRCgbgJnxeCWrLDoxZkw7IA1ECOwlTbsIiHHTL1Wy', 'roaa', 'roaaTeacher@gmail.com', 'teacher', '0591763884', '2025-06-11 21:25:46'),
 (9, 'aa', '$2y$10$tWerg2q1UwRmeiRs9sdUo.9rfBKCH/yeiFUWKsesav1QVw.HilEvu', 'aa', 'aa', 'student', '11', '2025-06-11 22:52:50'),
 (13, 'aa', '$2y$10$wq.PcSEZSqE9ZF9L2nCIKuKMUNj6i62pOiAQWTR9tvf5DDcEEwGBi', 'jamil', 'aa', 'student', '11', '2025-06-11 23:51:50'),
-(14, 'aaa', '$2y$10$Czq5s/2kYwBRYiGYwjMUj.TfodwWDAf3iOvxn9Fh0VNycS8q5.Sfu', 'aaa', 'aaa', 'student', '111', '2025-06-12 00:03:15'),
-(15, 'cc', '$2y$10$tXjuFtCTWClsa1rDnbm9KOEzpQmtp8I/6ztFtgvVCtMpQCE.h4Riy', 'cc', 'cc', 'student', '33', '2025-06-12 01:05:36');
+(14, 'aaa', '$2y$10$Czq5s/2kYwBRYiGYwjMUj.TfodwWDAf3iOvxn9Fh0VNycS8q5.Sfu', 'retal', 'aaa', 'student', '111', '2025-06-12 00:03:15'),
+(15, 'cc', '$2y$10$tXjuFtCTWClsa1rDnbm9KOEzpQmtp8I/6ztFtgvVCtMpQCE.h4Riy', 'cc', 'cc', 'student', '33', '2025-06-12 01:05:36'),
+(17, 'dinaTeacher', '$2a$12$VUCAnOCiGdgiu66xffqYjuc0hI.fhOQ2yqu5G2RmYfo2s0Qu0cw8y', 'dina', 'dina@gmail.com', 'teacher', '0591763884', '2025-06-13 14:48:46');
 
 --
 -- Indexes for dumped tables
@@ -376,25 +394,25 @@ ALTER TABLE `classes`
 -- AUTO_INCREMENT for table `class_course_teachers`
 --
 ALTER TABLE `class_course_teachers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `grade_courses`
 --
 ALTER TABLE `grade_courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `grade_levels`
 --
 ALTER TABLE `grade_levels`
-  MODIFY `grade_level_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `grade_level_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `marks`
@@ -406,7 +424,7 @@ ALTER TABLE `marks`
 -- AUTO_INCREMENT for table `schedules`
 --
 ALTER TABLE `schedules`
-  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `schedule_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `students`
@@ -418,13 +436,13 @@ ALTER TABLE `students`
 -- AUTO_INCREMENT for table `teachers`
 --
 ALTER TABLE `teachers`
-  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `teacher_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- Constraints for dumped tables

@@ -13,7 +13,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $class_id = $_POST['class_id'];
     $academic_year = $_POST['academic_year'];
 
-    // تحقق من السعة أولاً
     $checkCapacityQuery = "
         SELECT 
             c.max_capacity, 
@@ -46,17 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    // إذا كان هناك مساحة كافية، أضف الطالب
     $conn->begin_transaction();
 
     try {
-        // إضافة المستخدم
         $stmt = $conn->prepare("INSERT INTO users (username, password, name, email, role, phone) VALUES (?, ?, ?, ?, 'student', ?)");
         $stmt->bind_param("sssss", $username, $password, $full_name, $email, $phone);
         $stmt->execute();
         $user_id = $stmt->insert_id;
 
-        // إضافة الطالب
         $stmt = $conn->prepare("INSERT INTO students (user_id, parent_contact, date_of_birth, gender, class_id, academic_year) VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->bind_param("isssis", $user_id, $parent_contact, $dob, $gender, $class_id, $academic_year);
         $stmt->execute();
