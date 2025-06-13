@@ -1,33 +1,36 @@
 <?php
-header("Content-Type: application/json; charset=UTF-8");
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-$host = "localhost";
-$db = "school_management";
-$user = "root";
-$pass = "";
+include "DBConnect.php";
 
-$conn = new mysqli($host, $user, $pass, $db);
+$title = $_POST['title'] ?? '';
+$description = $_POST['description']?? '';
+$due_date = $_POST['due_date']?? '';
+$course_id = $_POST['course_id']?? '';
+$teacher_id = $_POST['teacher_id']?? '';
+$class_id = $_POST['class_id'] ?? '';
 
-if ($conn->connect_error) {
-    die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+
+if (!$title || !$description || !$due_date || !$course_id || !$teacher_id || !$class_id) {
+    echo "Missing required fields: \n";
+    echo "title: $title\n";
+    echo "description: $description\n";
+    echo "due_date: $due_date\n";
+    echo "course_id: $course_id\n";
+    echo "teacher_id: $teacher_id\n";
+    echo "class_id: $class_id\n";
+    exit;
 }
 
-$title = $conn->real_escape_string($_POST['title']);
-$description = $conn->real_escape_string($_POST['description']);
-$due_date = $conn->real_escape_string($_POST['due_date']);
-$course_id = $conn->real_escape_string($_POST['course_id']);
-$teacher_id = $conn->real_escape_string($_POST['teacher_id']);
-$class_id = $conn->real_escape_string($_POST['class_id']);
+$stmt = $connect->prepare("INSERT INTO assignments (course_id, title, description, due_date, teacher_id, class_id) VALUES (?, ?, ?, ?, ?, ?)");
+$stmt->bind_param("isssii", $course_id, $title, $description, $due_date, $teacher_id, $class_id);
 
-
-$sql = "INSERT INTO assignments (course_id, title, description, due_date, teacher_id, class_id) 
-        VALUES ('$course_id', '$title', '$description', '$due_date', '$teacher_id', '$class_id')";
-
-if ($conn->query($sql) === TRUE) {
-    echo json_encode(["status" => "success"]);
+if ($stmt->execute()) {
+    echo "success";
 } else {
-    echo json_encode(["error" => $conn->error]);
+    echo "error: " . $stmt->error;
 }
 
-$conn->close();
 ?>
+
