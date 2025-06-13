@@ -39,4 +39,9 @@
     <string name="academic_information">Academic Information</string>
     <string name="grade_level">Grade Level</string>
 
+    <string name="select_teacher">Select Teacher</string>
+    <string name="select_class">Select Class</string>
+    <string name="select_day">Select Day</string>
+    <string name="select_course">Select Course</string>
+
 </resources>

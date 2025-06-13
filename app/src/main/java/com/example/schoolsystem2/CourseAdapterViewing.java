@@ -31,9 +31,9 @@ public class CourseAdapterViewing extends RecyclerView.Adapter<CourseAdapterView
         Course course = courses.get(position);
 
         holder.courseNameTextView.setText(course.getCourseName());
-        holder.gradeLevelsTextView.setText("Grade Levels: " + joinList(course.getGradeLevels()));
-        holder.classesTextView.setText("Classes: " + joinList(course.getClasses()));
-        holder.teachersTextView.setText("Teachers: " + joinList(course.getTeachers()));
+        holder.gradeLevelsTextView.setText("Grade Level: " + joinList(course.getGradeLevels()));
+        holder.classesTextView.setText("Classe: " + joinList(course.getClasses()));
+        holder.teachersTextView.setText("Teacher: " + joinList(course.getTeachers()));
     }
 
     @Override
