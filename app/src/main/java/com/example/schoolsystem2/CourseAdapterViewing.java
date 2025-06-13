@@ -41,7 +41,6 @@ public class CourseAdapterViewing extends RecyclerView.Adapter<CourseAdapterView
         return courses.size();
     }
 
-    // دالة لمزج قائمة النصوص بفواصل
     private String joinList(List<String> list) {
         if (list == null || list.isEmpty()) {
             return "N/A";

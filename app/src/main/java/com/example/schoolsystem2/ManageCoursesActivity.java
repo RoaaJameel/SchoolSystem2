@@ -33,10 +33,9 @@ public class ManageCoursesActivity extends AppCompatActivity {
     }
 
     public void onDeleteCourseClick(View view) {
-        Toast.makeText(this, "Delete Course clicked", Toast.LENGTH_SHORT).show();
 
-        // Intent intent = new Intent(this, DeleteCourseActivity.class);
-        // startActivity(intent);
+         Intent intent = new Intent(this, DeleteCourseActivity.class);
+         startActivity(intent);
     }
 
     public void onViewCoursesClick(View view) {

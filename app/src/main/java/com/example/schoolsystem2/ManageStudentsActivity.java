@@ -42,7 +42,6 @@ public class ManageStudentsActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // ✅ زر تعديل الطالب
         LinearLayout modifyStudentCard = findViewById(R.id.modifyStudentCard);
         modifyStudentCard.setOnClickListener(v -> {
             Intent intent = new Intent(ManageStudentsActivity.this, ModifyStudentActivity.class);

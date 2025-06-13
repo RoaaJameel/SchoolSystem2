@@ -57,7 +57,7 @@ public class AddCourseActivity extends AppCompatActivity {
         teacherSpinner = findViewById(R.id.teacherSpinner);
         submitCourseButton = findViewById(R.id.submitCourseButton);
 
-        fetchGradeLevelsAndCreateCheckboxes(); // ✅ بدل الكورسات
+        fetchGradeLevelsAndCreateCheckboxes();
         fetchClasses();
         fetchTeachers();
 
@@ -187,7 +187,6 @@ public class AddCourseActivity extends AppCompatActivity {
         int selectedClassId = classItems.get(selectedClassPosition).id;
         int selectedTeacherId = teacherItems.get(selectedTeacherPosition).id;
 
-        // إرسال البيانات إلى السيرفر
         String url = "http://10.0.2.2/Android/add_course.php";
 
         StringBuilder postData = new StringBuilder();

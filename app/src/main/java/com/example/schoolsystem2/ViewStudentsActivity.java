@@ -35,7 +35,6 @@ public class ViewStudentsActivity extends AppCompatActivity {
     private ArrayList<String> classNames = new ArrayList<>();
     private ArrayList<String> academicYears = new ArrayList<>();
 
-    // Maps to hold id-name pairs for filtering
     private HashMap<String, String> gradeLevelMap = new HashMap<>();
     private HashMap<String, String> classMap = new HashMap<>();
 
@@ -154,12 +153,10 @@ public class ViewStudentsActivity extends AppCompatActivity {
     private void loadStudents() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
-        // بناء رابط مع معاملات التصفية حسب اختيار المستخدم
         String selectedGrade = gradeLevelSpinner.getSelectedItem() != null ? gradeLevelSpinner.getSelectedItem().toString() : "All";
         String selectedClass = classSpinner.getSelectedItem() != null ? classSpinner.getSelectedItem().toString() : "All";
         String selectedYear = academicYearSpinner.getSelectedItem() != null ? academicYearSpinner.getSelectedItem().toString() : "All";
 
-        // بناء URL مع معاملات GET للتصفية
         String url = URL_STUDENTS + "?grade_level=";
         url += selectedGrade.equals("All") ? "" : gradeLevelMap.getOrDefault(selectedGrade, "");
         url += "&class_id=";

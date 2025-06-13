@@ -32,7 +32,7 @@ public class AddStudentActivity extends AppCompatActivity {
 
     TextInputEditText usernameEditText, passwordEditText, confirmPasswordEditText,
             emailEditText, phoneEditText, fullNameEditText, dobEditText, parentContactEditText;
-    Spinner classSpinner, gradeLevelSpinner;  // أضفت gradeLevelSpinner
+    Spinner classSpinner, gradeLevelSpinner;
     AutoCompleteTextView yearAutoComplete;
     RadioGroup genderRadioGroup;
     Button submitButton, clearButton;
@@ -40,14 +40,14 @@ public class AddStudentActivity extends AppCompatActivity {
     String addStudentURL = "http://10.0.2.2/Android/add_student.php";
     String getClassesURL = "http://10.0.2.2/Android/get_classes.php";
     String getYearsURL = "http://10.0.2.2/Android/get_academic_years.php";
-    String getGradeLevelsURL = "http://10.0.2.2/Android/get_grade_levels.php";  // جديد
+    String getGradeLevelsURL = "http://10.0.2.2/Android/get_grade_levels.php";
 
     ArrayList<String> classNames = new ArrayList<>();
     ArrayList<String> classIds = new ArrayList<>();
     ArrayList<String> academicYears = new ArrayList<>();
 
-    ArrayList<String> gradeLevelNames = new ArrayList<>();  // جديد
-    ArrayList<String> gradeLevelIds = new ArrayList<>();    // جديد
+    ArrayList<String> gradeLevelNames = new ArrayList<>();
+    ArrayList<String> gradeLevelIds = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +64,7 @@ public class AddStudentActivity extends AppCompatActivity {
         dobEditText = findViewById(R.id.dobEditText);
         parentContactEditText = findViewById(R.id.parentContactEditText);
         classSpinner = findViewById(R.id.classSpinner);
-        gradeLevelSpinner = findViewById(R.id.gradeLevelSpinner); // ربط الجريد سبينر
+        gradeLevelSpinner = findViewById(R.id.gradeLevelSpinner);
         yearAutoComplete = findViewById(R.id.yearAutoComplete);
         genderRadioGroup = findViewById(R.id.genderRadioGroup);
         submitButton = findViewById(R.id.submitButton);
@@ -76,7 +76,7 @@ public class AddStudentActivity extends AppCompatActivity {
         // Load data for spinners
         loadClasses();
         loadAcademicYears();
-        loadGradeLevels();  // جديد
+        loadGradeLevels();
 
         // Submit button
         submitButton.setOnClickListener(v -> submitForm());
@@ -276,6 +276,6 @@ public class AddStudentActivity extends AppCompatActivity {
         yearAutoComplete.setText("");
         genderRadioGroup.clearCheck();
         classSpinner.setSelection(0);
-        gradeLevelSpinner.setSelection(0); // تفريغ الـ grade spinner
+        gradeLevelSpinner.setSelection(0);
     }
 }

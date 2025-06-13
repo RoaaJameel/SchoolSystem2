@@ -51,7 +51,6 @@
             android:layout_height="wrap_content"
             android:text="Parent Contact: " />
 
-        <!-- Row for Delete Button aligned to the right -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

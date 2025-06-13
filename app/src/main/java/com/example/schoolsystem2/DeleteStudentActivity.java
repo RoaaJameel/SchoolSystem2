@@ -62,7 +62,6 @@ public class DeleteStudentActivity extends AppCompatActivity {
         studentAdapter = new StudentAdapterDeletion(studentList, student -> deleteStudent(student.getId()));
         recyclerView.setAdapter(studentAdapter);
 
-        // تحميل بيانات السبينر
         loadGradeLevels();
         loadClasses();
         loadAcademicYears();
@@ -81,7 +80,6 @@ public class DeleteStudentActivity extends AppCompatActivity {
         classSpinner.setOnItemSelectedListener(filterListener);
         academicYearSpinner.setOnItemSelectedListener(filterListener);
 
-        // تحميل الطلاب لأول مرة
         loadStudents();
     }
 
@@ -213,17 +211,25 @@ public class DeleteStudentActivity extends AppCompatActivity {
     }
 
     private void deleteStudent(int studentId) {
-        String url = URL_DELETE_STUDENT + studentId;
-        RequestQueue queue = Volley.newRequestQueue(this);
+        new androidx.appcompat.app.AlertDialog.Builder(this)
+                .setTitle("Delete Confirmation")
+                .setMessage("Are you sure you want to delete this student?")
+                .setPositiveButton("Yes", (dialog, which) -> {
+                    String url = URL_DELETE_STUDENT + studentId;
+                    RequestQueue queue = Volley.newRequestQueue(this);
 
-        StringRequest request = new StringRequest(Request.Method.GET, url,
-                response -> {
-                    Toast.makeText(this, response, Toast.LENGTH_LONG).show();
-                    loadStudents();
-                },
-                error -> Toast.makeText(this, "Deletion failed", Toast.LENGTH_SHORT).show()
-        );
+                    StringRequest request = new StringRequest(Request.Method.GET, url,
+                            response -> {
+                                Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_LONG).show();
+                                loadStudents();
+                            },
+                            error -> Toast.makeText(this, "Deletion failed", Toast.LENGTH_SHORT).show()
+                    );
 
-        queue.add(request);
+                    queue.add(request);
+                })
+                .setNegativeButton("Cancel", null)
+                .show();
     }
+
 }

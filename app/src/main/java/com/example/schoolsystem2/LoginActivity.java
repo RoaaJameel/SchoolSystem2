@@ -54,7 +54,6 @@ public class LoginActivity extends AppCompatActivity {
         ImageView monkeyImage = findViewById(R.id.monkeyImage);
         Button loginButton = findViewById(R.id.loginButton);
 
-        // ✅ استرجاع القيم المحفوظة إذا كانت موجودة
         if (savedInstanceState != null) {
             String savedUsername = savedInstanceState.getString("username");
             String savedPassword = savedInstanceState.getString("password");
