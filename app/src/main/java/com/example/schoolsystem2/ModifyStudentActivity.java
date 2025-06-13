@@ -77,11 +77,9 @@ public class ModifyStudentActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 loadStudents();
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> parent) {}
         };
-
         gradeLevelSpinner.setOnItemSelectedListener(filterListener);
         classSpinner.setOnItemSelectedListener(filterListener);
         academicYearSpinner.setOnItemSelectedListener(filterListener);
@@ -94,11 +92,13 @@ public class ModifyStudentActivity extends AppCompatActivity {
                     gradeLevelNames.clear();
                     gradeLevelMap.clear();
                     gradeLevelNames.add("All");
+
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject obj = response.optJSONObject(i);
                         if (obj != null) {
                             String id = obj.optString("grade_level_id");
                             String name = obj.optString("name");
+
                             gradeLevelMap.put(name, id);
                             gradeLevelNames.add(name);
                         }
@@ -107,7 +107,8 @@ public class ModifyStudentActivity extends AppCompatActivity {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     gradeLevelSpinner.setAdapter(adapter);
                 },
-                error -> Toast.makeText(this, "Failed to load grade levels", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(this, "Failed to load grade levels", Toast.LENGTH_SHORT).show()
+        );
         queue.add(request);
     }
 
@@ -118,11 +119,13 @@ public class ModifyStudentActivity extends AppCompatActivity {
                     classNames.clear();
                     classMap.clear();
                     classNames.add("All");
+
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject obj = response.optJSONObject(i);
                         if (obj != null) {
                             String id = obj.optString("class_id");
                             String name = obj.optString("class_name");
+
                             classMap.put(name, id);
                             classNames.add(name);
                         }
@@ -131,7 +134,8 @@ public class ModifyStudentActivity extends AppCompatActivity {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     classSpinner.setAdapter(adapter);
                 },
-                error -> Toast.makeText(this, "Failed to load classes", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(this, "Failed to load classes", Toast.LENGTH_SHORT).show()
+        );
         queue.add(request);
     }
 
@@ -141,10 +145,12 @@ public class ModifyStudentActivity extends AppCompatActivity {
                 response -> {
                     academicYears.clear();
                     academicYears.add("All");
+
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject obj = response.optJSONObject(i);
                         if (obj != null) {
                             String year = obj.optString("year");
+
                             academicYears.add(year);
                         }
                     }
@@ -152,7 +158,8 @@ public class ModifyStudentActivity extends AppCompatActivity {
                     adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                     academicYearSpinner.setAdapter(adapter);
                 },
-                error -> Toast.makeText(this, "Failed to load academic years", Toast.LENGTH_SHORT).show());
+                error -> Toast.makeText(this, "Failed to load academic years", Toast.LENGTH_SHORT).show()
+        );
         queue.add(request);
     }
 
@@ -163,12 +170,15 @@ public class ModifyStudentActivity extends AppCompatActivity {
         String selectedClass = classSpinner.getSelectedItem() != null ? classSpinner.getSelectedItem().toString() : "All";
         String selectedYear = academicYearSpinner.getSelectedItem() != null ? academicYearSpinner.getSelectedItem().toString() : "All";
 
-        String url = URL_STUDENTS + "?grade_level=";
-        url += selectedGrade.equals("All") ? "" : gradeLevelMap.getOrDefault(selectedGrade, "");
-        url += "&class_id=";
-        url += selectedClass.equals("All") ? "" : classMap.getOrDefault(selectedClass, "");
-        url += "&academic_year=";
-        url += selectedYear.equals("All") ? "" : selectedYear;
+        StringBuilder urlBuilder = new StringBuilder(URL_STUDENTS);
+        urlBuilder.append("?grade_level=");
+        urlBuilder.append(selectedGrade.equals("All") ? "" : gradeLevelMap.getOrDefault(selectedGrade, ""));
+        urlBuilder.append("&class_id=");
+        urlBuilder.append(selectedClass.equals("All") ? "" : classMap.getOrDefault(selectedClass, ""));
+        urlBuilder.append("&academic_year=");
+        urlBuilder.append(selectedYear.equals("All") ? "" : selectedYear);
+
+        String url = urlBuilder.toString();
 
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
@@ -181,6 +191,7 @@ public class ModifyStudentActivity extends AppCompatActivity {
                             return;
                         }
                         JSONArray studentsArray = response.optJSONArray("students");
+
                         if (studentsArray == null || studentsArray.length() == 0) {
                             Toast.makeText(this, "No students to display", Toast.LENGTH_LONG).show();
                             studentList.clear();
@@ -188,6 +199,7 @@ public class ModifyStudentActivity extends AppCompatActivity {
                             return;
                         }
                         studentList.clear();
+
                         for (int i = 0; i < studentsArray.length(); i++) {
                             JSONObject obj = studentsArray.getJSONObject(i);
                             int id = obj.getInt("student_id");
@@ -200,14 +212,16 @@ public class ModifyStudentActivity extends AppCompatActivity {
 
                             studentList.add(new Student(id, name, gender, dob, gradeLevel, className, contact));
                         }
-
                         adapter.notifyDataSetChanged();
+
                     } catch (Exception e) {
                         Toast.makeText(this, "Parsing error", Toast.LENGTH_SHORT).show();
                     }
                 },
-                error -> Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show());
+                error -> Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_LONG).show()
+        );
 
         queue.add(jsonObjectRequest);
     }
 }
+

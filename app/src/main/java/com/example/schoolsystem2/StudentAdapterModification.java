@@ -56,6 +56,7 @@ public class StudentAdapterModification extends RecyclerView.Adapter<StudentAdap
         holder.editGradeLevelBtn.setOnClickListener(v -> showEditDialog(student, position, "Academic Year"));
         holder.editClassBtn.setOnClickListener(v -> showEditDialog(student, position, "Class"));
         holder.editContactBtn.setOnClickListener(v -> showEditDialog(student, position, "Parent Contact"));
+
     }
 
     private void showEditDialog(Student student, int position, String field) {

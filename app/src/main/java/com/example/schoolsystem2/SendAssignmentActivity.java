@@ -18,7 +18,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.android.volley.Request;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.example.schoolsystem2.R;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -39,6 +38,12 @@ public class SendAssignmentActivity extends AppCompatActivity {
     ArrayList<String> courseNames = new ArrayList<>(); //
     HashMap<String, String> courseMap = new HashMap<>(); // Maps course name to course_id
 
+    Spinner spinnerClass;
+
+    ArrayList<String> classNames = new ArrayList<>();
+    HashMap<String, String> classMap = new HashMap<>(); // Maps class name to class_id
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,8 +54,12 @@ public class SendAssignmentActivity extends AppCompatActivity {
         tvDueDate = findViewById(R.id.tvDueDate);
         spinnerSubject = findViewById(R.id.spinnerSubject);
         btnSubmit = findViewById(R.id.btnSubmit);
+        spinnerClass = findViewById(R.id.spinnerClass);
 
         loadCourses(); // Populate course spinner
+
+        loadClasses(); // Populate class spinner
+
 
         tvDueDate.setOnClickListener(v -> {
             Calendar calendar = Calendar.getInstance();
@@ -65,7 +74,7 @@ public class SendAssignmentActivity extends AppCompatActivity {
     }
 
     private void loadCourses() {
-        String url = "http://10.0.2.2/Android/get_courses.php"; // Replace with your server URL
+        String url = "http://10.0.2.2/Android/get_courses.php";
 
         StringRequest request = new StringRequest(Request.Method.GET, url,
                 response -> {
@@ -87,16 +96,61 @@ public class SendAssignmentActivity extends AppCompatActivity {
                         e.printStackTrace();
                     }
                 },
-                error -> Toast.makeText(this, "Error loading courses", Toast.LENGTH_SHORT).show());
+                error -> {
+                    error.printStackTrace(); // Add this to see the error in Logcat
+
+                    Toast.makeText(this, "Error loading courses: " + error.getMessage(), Toast.LENGTH_LONG).show();
+                });
 
         Volley.newRequestQueue(this).add(request);
     }
 
+    private void loadClasses() {
+        String url = "http://10.0.2.2/Android/get_classes.php"; // PHP endpoint for classes
+
+        StringRequest request = new StringRequest(Request.Method.GET, url,
+                response -> {
+                    try {
+                        JSONArray array = new JSONArray(response);
+                        for (int i = 0; i < array.length(); i++) {
+                            JSONObject obj = array.getJSONObject(i);
+                            String classId = obj.getString("class_id");
+                            String className = obj.getString("class_name");
+
+                            classNames.add(className);
+                            classMap.put(className, classId);
+                        }
+
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, classNames);
+                        spinnerClass.setAdapter(adapter);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                },
+                error -> Toast.makeText(this, "Error loading classes: " + error.getMessage(), Toast.LENGTH_LONG).show());
+
+        Volley.newRequestQueue(this).add(request);
+    }
+
+
     private void submitAssignment() {
+        if (spinnerSubject.getSelectedItem() == null) {
+            Toast.makeText(this, "Courses not loaded yet. Please wait.", Toast.LENGTH_SHORT).show();
+            return;
+        }
         String title = etTitle.getText().toString().trim();
         String desc = etDescription.getText().toString().trim();
         String selectedCourseName = spinnerSubject.getSelectedItem().toString();
         String courseId = courseMap.get(selectedCourseName);
+        String selectedClassName = spinnerClass.getSelectedItem().toString();
+        String classId = classMap.get(selectedClassName);
+
+
+        if (spinnerSubject.getSelectedItem() == null) {
+            Toast.makeText(this, "Please wait for courses to load", Toast.LENGTH_SHORT).show();
+            return;
+        }
 
         if (title.isEmpty() || desc.isEmpty() || selectedDate.isEmpty()) {
             Toast.makeText(this, "Please fill all fields", Toast.LENGTH_SHORT).show();
@@ -104,11 +158,19 @@ public class SendAssignmentActivity extends AppCompatActivity {
         }
 
         // Send to server using Volley
-        String url = "http://10.0.2.2/Android/send_assignment.php";
+        String url = "http://10.0.2.2/Android/send_assignment.php"; // Replace with your server URL
 
         StringRequest request = new StringRequest(Request.Method.POST, url,
-                response -> Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show(),
-                error -> Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+                //response -> Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show(),
+                //error -> Toast.makeText(this, "Error: " + error.getMessage(), Toast.LENGTH_SHORT).show()
+                response -> {
+                    if (response.trim().equalsIgnoreCase("success")) {
+                        Toast.makeText(this, "Assignment submitted!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(this, "Server error: " + response, Toast.LENGTH_LONG).show();
+                    }
+                },
+                error -> Toast.makeText(this, "Network error: " + error.getMessage(), Toast.LENGTH_LONG).show()
         ) {
             @Override
             protected Map<String, String> getParams() {
@@ -118,6 +180,10 @@ public class SendAssignmentActivity extends AppCompatActivity {
                 params.put("due_date", selectedDate);
                 params.put("course_id", courseId);
                 params.put("teacher_id", "1"); // Replace with actual teacher_id after login
+                params.put("class_id", classId);
+
+                //params.put("class_id", "3"); // Use actual class_id here if available
+
                 return params;
             }
         };

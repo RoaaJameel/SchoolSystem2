@@ -5,6 +5,8 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#FFFFFF"
+
 
     tools:context=".SendAssignmentActivity">
 
@@ -59,6 +61,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp" />
 
+            <Spinner
+                android:id="@+id/spinnerClass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp" />
+
+
             <Button
                 android:id="@+id/btnSubmit"
                 android:layout_width="302dp"
@@ -67,7 +76,7 @@
                 android:layout_marginTop="16dp"
                 android:backgroundTint="#202843"
                 android:text="Submit Assignment"
-                android:textSize="24sp" />
+                android:textSize="20sp" />
 
         </LinearLayout>
     </ScrollView>

@@ -37,7 +37,6 @@ public class Student {
         this.parentContact = parentContact;
     }
 
-    // Constructor الكامل
     public Student(int studentId, String name, String gender, String dob, String gradeLevel, String className, String parentContact) {
         this.studentId = studentId;
         this.name = name;
@@ -48,18 +47,16 @@ public class Student {
         this.parentContact = parentContact;
     }
 
-    // ✅ Constructor مختصر (اختياري)
+
     public Student(int studentId, String name) {
         this.studentId = studentId;
         this.name = name;
     }
 
-    // ✅ Getter المطلوب في adapter
     public int getId() {
         return studentId;
     }
 
-    // Getters الأخرى
     public int getStudentId() {
         return studentId;
     }

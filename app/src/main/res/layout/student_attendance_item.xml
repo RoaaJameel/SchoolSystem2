@@ -1,0 +1,29 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:layout_margin="8dp"
+    android:padding="10dp"
+    android:background="#b3d9ff">
+
+    <TextView
+        android:id="@+id/studentNameTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:text="Student Name"
+        android:textColor="#212121"
+        android:textStyle="bold|italic"
+        android:textSize="24sp" />
+
+    <CheckBox
+        android:id="@+id/attendanceCheckbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Present"
+        android:textSize="18sp"
+        android:scaleX="1.1"
+        android:scaleY="1.1" />
+
+</LinearLayout>

@@ -26,19 +26,24 @@ import java.util.HashMap;
 
 public class DeleteStudentActivity extends AppCompatActivity {
 
+    // UI components
     private RecyclerView recyclerView;
+    private Spinner gradeLevelSpinner, classSpinner, academicYearSpinner;
+
+    // Adapter and data list
     private StudentAdapterDeletion studentAdapter;
     private ArrayList<Student> studentList;
 
-    private Spinner gradeLevelSpinner, classSpinner, academicYearSpinner;
-
+    // Data for spinners
     private ArrayList<String> gradeLevelNames = new ArrayList<>();
     private ArrayList<String> classNames = new ArrayList<>();
     private ArrayList<String> academicYears = new ArrayList<>();
 
+    // Maps for ID lookup by name
     private HashMap<String, String> gradeLevelMap = new HashMap<>();
     private HashMap<String, String> classMap = new HashMap<>();
 
+    // URLs for backend endpoints
     private static final String URL_GET_STUDENTS = "http://10.0.2.2/Android/view_students.php";
     private static final String URL_DELETE_STUDENT = "http://10.0.2.2/Android/delete_student.php?student_id=";
     private static final String URL_GRADE_LEVEL = "http://10.0.2.2/Android/get_grade_levels.php";
@@ -50,6 +55,7 @@ public class DeleteStudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_delete_student);
 
+        // Initialize views
         recyclerView = findViewById(R.id.recyclerViewDelete);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -57,39 +63,42 @@ public class DeleteStudentActivity extends AppCompatActivity {
         classSpinner = findViewById(R.id.classSpinner);
         academicYearSpinner = findViewById(R.id.academicYearSpinner);
 
+        // Initialize data list and adapter
         studentList = new ArrayList<>();
-
         studentAdapter = new StudentAdapterDeletion(studentList, student -> deleteStudent(student.getId()));
         recyclerView.setAdapter(studentAdapter);
 
+        // Load spinner data
         loadGradeLevels();
         loadClasses();
         loadAcademicYears();
 
+        // Listener to trigger reloading students when filter changes
         AdapterView.OnItemSelectedListener filterListener = new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 loadStudents();
             }
-
             @Override
-            public void onNothingSelected(AdapterView<?> parent) { }
+            public void onNothingSelected(AdapterView<?> parent) {}
         };
 
         gradeLevelSpinner.setOnItemSelectedListener(filterListener);
         classSpinner.setOnItemSelectedListener(filterListener);
         academicYearSpinner.setOnItemSelectedListener(filterListener);
 
+        // Load students initially
         loadStudents();
     }
 
+    // Load grade levels and fill spinner
     private void loadGradeLevels() {
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL_GRADE_LEVEL, null,
                 response -> {
                     gradeLevelNames.clear();
                     gradeLevelMap.clear();
-                    gradeLevelNames.add("All");
+                    gradeLevelNames.add("All"); // Default option
                     for (int i = 0; i < response.length(); i++) {
                         JSONObject obj = response.optJSONObject(i);
                         if (obj != null) {
@@ -108,6 +117,7 @@ public class DeleteStudentActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+    // Load classes and fill spinner
     private void loadClasses() {
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL_CLASS, null,
@@ -133,6 +143,7 @@ public class DeleteStudentActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+    // Load academic years and fill spinner
     private void loadAcademicYears() {
         RequestQueue queue = Volley.newRequestQueue(this);
         JsonArrayRequest request = new JsonArrayRequest(Request.Method.GET, URL_ACADEMIC_YEAR, null,
@@ -155,13 +166,16 @@ public class DeleteStudentActivity extends AppCompatActivity {
         queue.add(request);
     }
 
+    // Load students based on selected filters
     private void loadStudents() {
         RequestQueue queue = Volley.newRequestQueue(this);
 
+        // Get selected values from spinners
         String selectedGrade = gradeLevelSpinner.getSelectedItem() != null ? gradeLevelSpinner.getSelectedItem().toString() : "All";
         String selectedClass = classSpinner.getSelectedItem() != null ? classSpinner.getSelectedItem().toString() : "All";
         String selectedYear = academicYearSpinner.getSelectedItem() != null ? academicYearSpinner.getSelectedItem().toString() : "All";
 
+        // Build URL with filters
         String url = URL_GET_STUDENTS + "?grade_level=";
         url += selectedGrade.equals("All") ? "" : gradeLevelMap.getOrDefault(selectedGrade, "");
         url += "&class_id=";
@@ -169,24 +183,27 @@ public class DeleteStudentActivity extends AppCompatActivity {
         url += "&academic_year=";
         url += selectedYear.equals("All") ? "" : selectedYear;
 
+        // Request student data
         JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
                 response -> {
                     try {
                         boolean success = response.optBoolean("success", false);
+                        studentList.clear();
+
                         if (!success) {
                             Toast.makeText(this, response.optString("message", "No students found"), Toast.LENGTH_LONG).show();
-                            studentList.clear();
                             studentAdapter.notifyDataSetChanged();
                             return;
                         }
+
                         JSONArray studentsArray = response.optJSONArray("students");
                         if (studentsArray == null || studentsArray.length() == 0) {
                             Toast.makeText(this, "No students to display", Toast.LENGTH_LONG).show();
-                            studentList.clear();
                             studentAdapter.notifyDataSetChanged();
                             return;
                         }
-                        studentList.clear();
+
+                        // Parse each student and add to list
                         for (int i = 0; i < studentsArray.length(); i++) {
                             JSONObject obj = studentsArray.getJSONObject(i);
                             int id = obj.getInt("student_id");
@@ -199,7 +216,10 @@ public class DeleteStudentActivity extends AppCompatActivity {
 
                             studentList.add(new Student(id, name, gender, dob, gradeLevel, className, contact));
                         }
+
+                        // Update RecyclerView
                         studentAdapter.notifyDataSetChanged();
+
                     } catch (Exception e) {
                         Toast.makeText(this, "Parsing error", Toast.LENGTH_SHORT).show();
                     }
@@ -210,6 +230,7 @@ public class DeleteStudentActivity extends AppCompatActivity {
         queue.add(jsonObjectRequest);
     }
 
+    // Delete student with confirmation dialog
     private void deleteStudent(int studentId) {
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle("Delete Confirmation")
@@ -221,7 +242,7 @@ public class DeleteStudentActivity extends AppCompatActivity {
                     StringRequest request = new StringRequest(Request.Method.GET, url,
                             response -> {
                                 Toast.makeText(this, "Student deleted successfully", Toast.LENGTH_LONG).show();
-                                loadStudents();
+                                loadStudents(); // Refresh list
                             },
                             error -> Toast.makeText(this, "Deletion failed", Toast.LENGTH_SHORT).show()
                     );
@@ -231,5 +252,4 @@ public class DeleteStudentActivity extends AppCompatActivity {
                 .setNegativeButton("Cancel", null)
                 .show();
     }
-
 }

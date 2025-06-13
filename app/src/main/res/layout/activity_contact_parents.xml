@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <ImageView
+        android:id="@+id/logoImageView"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_gravity="center"
+        android:contentDescription="Logo"
+        android:src="@drawable/school_logo" />
+
+    <Spinner
+        android:id="@+id/studentSpinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown" />
+
+    <EditText
+        android:id="@+id/messageEditText"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginTop="20dp"
+        android:hint="Enter message to parent"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:background="@drawable/edit_text_background" />
+
+
+    <Button
+        android:id="@+id/sendEmailButton"
+        android:layout_width="302dp"
+        android:layout_height="62dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="16dp"
+        android:backgroundTint="#202843"
+        android:text="Send Email"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp" />
+</LinearLayout>

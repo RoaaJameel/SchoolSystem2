@@ -69,5 +69,9 @@ public class AdminActivity extends AppCompatActivity {
                 startActivity(new Intent(AdminActivity.this, ScheduleDashboardActivity.class))
         );
     }
+    @Override
+    public void onBackPressed() {
+        moveTaskToBack(true);
+    }
 
 }

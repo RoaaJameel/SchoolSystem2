@@ -16,6 +16,15 @@
         android:theme="@style/Theme.SchoolSystem"
         tools:targetApi="31">
         <activity
+            android:name=".ContactParentsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".RecordAttendanceActivity"
+            android:exported="false" />
+        <activity
+            android:name=".SendMarksActivity"
+            android:exported="false" />
+        <activity
             android:name=".TeacherScheduleActivity"
             android:exported="false" />
         <activity

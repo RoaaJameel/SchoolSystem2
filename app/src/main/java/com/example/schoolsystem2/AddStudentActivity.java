@@ -30,6 +30,7 @@ import java.util.Map;
 
 public class AddStudentActivity extends AppCompatActivity {
 
+    // UI elements
     TextInputEditText usernameEditText, passwordEditText, confirmPasswordEditText,
             emailEditText, phoneEditText, fullNameEditText, dobEditText, parentContactEditText;
     Spinner classSpinner, gradeLevelSpinner;
@@ -37,15 +38,16 @@ public class AddStudentActivity extends AppCompatActivity {
     RadioGroup genderRadioGroup;
     Button submitButton, clearButton;
 
+    // API endpoints
     String addStudentURL = "http://10.0.2.2/Android/add_student.php";
     String getClassesURL = "http://10.0.2.2/Android/get_classes.php";
     String getYearsURL = "http://10.0.2.2/Android/get_academic_years.php";
     String getGradeLevelsURL = "http://10.0.2.2/Android/get_grade_levels.php";
 
+    // Lists for spinner data
     ArrayList<String> classNames = new ArrayList<>();
     ArrayList<String> classIds = new ArrayList<>();
     ArrayList<String> academicYears = new ArrayList<>();
-
     ArrayList<String> gradeLevelNames = new ArrayList<>();
     ArrayList<String> gradeLevelIds = new ArrayList<>();
 
@@ -54,7 +56,7 @@ public class AddStudentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_student);
 
-        // Init views
+        // Bind views
         usernameEditText = findViewById(R.id.usernameEditText);
         passwordEditText = findViewById(R.id.passwordEditText);
         confirmPasswordEditText = findViewById(R.id.confirmPasswordEditText);
@@ -70,26 +72,26 @@ public class AddStudentActivity extends AppCompatActivity {
         submitButton = findViewById(R.id.submitButton);
         clearButton = findViewById(R.id.clearButton);
 
-        // Pick date
+        // Show date picker when DOB field is clicked
         dobEditText.setOnClickListener(v -> showDatePicker());
 
-        // Load data for spinners
+        // Loading data from server
         loadClasses();
         loadAcademicYears();
         loadGradeLevels();
 
-        // Submit button
+        // Button actions
         submitButton.setOnClickListener(v -> submitForm());
-
-        // Clear button
         clearButton.setOnClickListener(v -> clearForm());
     }
 
+    // Show date picker and validate age
     private void showDatePicker() {
         Calendar calendar = Calendar.getInstance();
         new DatePickerDialog(this, (view, year, month, dayOfMonth) -> {
             Calendar selected = Calendar.getInstance();
             selected.set(year, month, dayOfMonth);
+
             if (!isAgeValid(year, month, dayOfMonth)) {
                 Toast.makeText(this, "Student must be older than 5 years", Toast.LENGTH_SHORT).show();
                 return;
@@ -102,12 +104,7 @@ public class AddStudentActivity extends AppCompatActivity {
     private boolean isAgeValid(int year, int month, int day) {
         Calendar dobCalendar = Calendar.getInstance();
         dobCalendar.set(year, month, day);
-
         Calendar today = Calendar.getInstance();
-
-        if (dobCalendar.after(today)) {
-            return false;
-        }
 
         int age = today.get(Calendar.YEAR) - dobCalendar.get(Calendar.YEAR);
         if (today.get(Calendar.DAY_OF_YEAR) < dobCalendar.get(Calendar.DAY_OF_YEAR)) {
@@ -115,7 +112,6 @@ public class AddStudentActivity extends AppCompatActivity {
         }
         return age >= 5;
     }
-
 
     private void loadClasses() {
         StringRequest request = new StringRequest(Request.Method.GET, getClassesURL,
@@ -133,7 +129,6 @@ public class AddStudentActivity extends AppCompatActivity {
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         classSpinner.setAdapter(adapter);
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         Toast.makeText(this, "Failed to parse classes", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -155,7 +150,6 @@ public class AddStudentActivity extends AppCompatActivity {
                         yearAutoComplete.setAdapter(adapter);
                         yearAutoComplete.setThreshold(1);
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         Toast.makeText(this, "Failed to parse academic years", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -177,12 +171,10 @@ public class AddStudentActivity extends AppCompatActivity {
                             gradeLevelIds.add(obj.getString("grade_level_id"));
                             gradeLevelNames.add(obj.getString("name"));
                         }
-                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this,
-                                android.R.layout.simple_spinner_item, gradeLevelNames);
+                        ArrayAdapter<String> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, gradeLevelNames);
                         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         gradeLevelSpinner.setAdapter(adapter);
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         Toast.makeText(this, "Failed to parse grade levels", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -208,12 +200,8 @@ public class AddStudentActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select class, grade level and academic year", Toast.LENGTH_SHORT).show();
             return;
         }
-
-        int selectedClassIndex = classSpinner.getSelectedItemPosition();
-        String classId = classIds.get(selectedClassIndex);
-
-        int selectedGradeIndex = gradeLevelSpinner.getSelectedItemPosition();
-        String gradeLevelId = gradeLevelIds.get(selectedGradeIndex);
+        String classId = classIds.get(classSpinner.getSelectedItemPosition());
+        String gradeLevelId = gradeLevelIds.get(gradeLevelSpinner.getSelectedItemPosition());
 
         if (genderRadioGroup.getCheckedRadioButtonId() == -1) {
             Toast.makeText(this, "Please select gender", Toast.LENGTH_SHORT).show();
@@ -237,7 +225,6 @@ public class AddStudentActivity extends AppCompatActivity {
                             Toast.makeText(this, "Failed: " + jsonObject.getString("message"), Toast.LENGTH_LONG).show();
                         }
                     } catch (JSONException e) {
-                        e.printStackTrace();
                         Toast.makeText(this, "Response parsing error", Toast.LENGTH_SHORT).show();
                     }
                 },
@@ -260,7 +247,6 @@ public class AddStudentActivity extends AppCompatActivity {
                 return map;
             }
         };
-
         Volley.newRequestQueue(this).add(stringRequest);
     }
 
@@ -277,5 +263,43 @@ public class AddStudentActivity extends AppCompatActivity {
         genderRadioGroup.clearCheck();
         classSpinner.setSelection(0);
         gradeLevelSpinner.setSelection(0);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        // حفظ البيانات في SharedPreferences عند الخروج
+        getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).edit()
+                .putString("username", usernameEditText.getText().toString())
+                .putString("phone", phoneEditText.getText().toString())
+                .putString("email", emailEditText.getText().toString())
+                .putString("full_name", fullNameEditText.getText().toString())
+                .putString("dob", dobEditText.getText().toString())
+                .putString("parent_contact", parentContactEditText.getText().toString())
+                .putString("academic_year", yearAutoComplete.getText().toString())
+                .apply();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        // استعادة البيانات عند العودة للتطبيق
+        String username = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("username","");
+        String phone = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("phone","");
+        String email = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("email","");
+        String full_name = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("full_name","");
+        String dob = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("dob","");
+        String parent_contact = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("parent_contact","");
+        String academic_year = getSharedPreferences("AddStudentPrefs",MODE_PRIVATE).getString("academic_year","");
+
+        usernameEditText.setText(username);
+        phoneEditText.setText(phone);
+        emailEditText.setText(email);
+        fullNameEditText.setText(full_name);
+        dobEditText.setText(dob);
+        parentContactEditText.setText(parent_contact);
+        yearAutoComplete.setText(academic_year);
     }
 }
