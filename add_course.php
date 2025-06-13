@@ -41,7 +41,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         $conn->commit();
-        echo "Course and relations added successfully.";
+        echo "Course added successfully.";
     } catch (Exception $e) {
         $conn->rollback();
         echo "Error: " . $e->getMessage();
