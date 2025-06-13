@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 13, 2025 at 12:16 AM
+-- Generation Time: Jun 13, 2025 at 02:52 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -89,7 +89,8 @@ CREATE TABLE `class_course_teachers` (
 --
 
 INSERT INTO `class_course_teachers` (`id`, `class_id`, `course_id`, `teacher_id`) VALUES
-(1, 3, 4, 1);
+(1, 3, 4, 1),
+(2, 4, 5, 1);
 
 -- --------------------------------------------------------
 
@@ -107,7 +108,8 @@ CREATE TABLE `courses` (
 --
 
 INSERT INTO `courses` (`course_id`, `course_name`) VALUES
-(4, 'e');
+(4, 'e'),
+(5, 'math');
 
 -- --------------------------------------------------------
 
@@ -126,7 +128,8 @@ CREATE TABLE `grade_courses` (
 --
 
 INSERT INTO `grade_courses` (`id`, `grade_level_id`, `course_id`) VALUES
-(1, 1, 4);
+(1, 1, 4),
+(2, 2, 5);
 
 -- --------------------------------------------------------
 
@@ -373,19 +376,19 @@ ALTER TABLE `classes`
 -- AUTO_INCREMENT for table `class_course_teachers`
 --
 ALTER TABLE `class_course_teachers`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `course_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `grade_courses`
 --
 ALTER TABLE `grade_courses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `grade_levels`
