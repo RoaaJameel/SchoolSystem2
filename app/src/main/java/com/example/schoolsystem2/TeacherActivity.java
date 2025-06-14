@@ -12,7 +12,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 public class TeacherActivity extends AppCompatActivity {
 
-    Button btnSendAssignment, btnSendMarks, btnRecordAttendance, btnContactParents;
+    Button btnSendAssignment, btnSendMarks, btnRecordAttendance, btnContactParents , btnLogOut;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -23,6 +23,7 @@ public class TeacherActivity extends AppCompatActivity {
         btnSendMarks = findViewById(R.id.btnSendMarks);
         btnRecordAttendance = findViewById(R.id.btnRecordAttendance);
         btnContactParents = findViewById(R.id.btnContactParents);
+        btnLogOut = findViewById(R.id.btnLogout);
 
         btnSendAssignment.setOnClickListener(v -> {
             Intent intent = new Intent(TeacherActivity.this, SendAssignmentActivity.class);
@@ -43,6 +44,11 @@ public class TeacherActivity extends AppCompatActivity {
 
         btnContactParents.setOnClickListener(v -> {
             Intent intent = new Intent(TeacherActivity.this, ContactParentsActivity.class);
+            startActivity(intent);
+        });
+
+        btnLogOut.setOnClickListener(v -> {
+            Intent intent = new Intent(TeacherActivity.this, LoginActivity.class);
             startActivity(intent);
         });
     }
