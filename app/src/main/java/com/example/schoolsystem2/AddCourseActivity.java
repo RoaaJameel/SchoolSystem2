@@ -28,6 +28,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 
 public class AddCourseActivity extends AppCompatActivity {
@@ -198,52 +200,143 @@ public class AddCourseActivity extends AppCompatActivity {
             Toast.makeText(this, "Please select class and teacher", Toast.LENGTH_SHORT).show();
             return;
         }
-        int selectedClassId = classItems.get(selectedClassPosition).id;
-        int selectedTeacherId = teacherItems.get(selectedTeacherPosition).id;
+        final String selectedClassId = String.valueOf(classItems.get(selectedClassPosition).id);
+        final String selectedTeacherId = String.valueOf(teacherItems.get(selectedTeacherPosition).id);
 
-        String url = "http://10.0.2.2/Android/add_course.php";
-        StringBuilder postData = new StringBuilder();
-        postData.append("course_name=").append(courseName.replace(" ", "%20"));
-        for (String gradeId : selectedGradeLevels) {
-            postData.append("&grade_levels[]=").append(gradeId);
+        if (selectedGradeLevels.isEmpty()) {
+            Toast.makeText(this, "Please select at least one grade level", Toast.LENGTH_SHORT).show();
+            return;
         }
-        postData.append("&class_teacher_links[0][class_id]=").append(selectedClassId);
-        postData.append("&class_teacher_links[0][teacher_id]=").append(selectedTeacherId);
 
-        RequestQueue queue = Volley.newRequestQueue(this);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
-                response -> {
-                    Toast.makeText(AddCourseActivity.this, response, Toast.LENGTH_LONG).show();
+        final int[] requestsCount = {selectedGradeLevels.size()};
+        final boolean[] addedAnyCourse = {false};
 
-                    // Clear form and preferences
-                    clearFormData();
+        for (String gradeId : selectedGradeLevels) {
+            final String finalGradeId = gradeId;
+            String courseNameEncoded;
+            try {
+                courseNameEncoded = URLEncoder.encode(courseName, "UTF-8");
+            } catch (Exception e) {
+                courseNameEncoded = courseName.replace(" ", "%20");
+            }
+            final String finalCourseNameEncoded = courseNameEncoded;
 
-                    courseNameEditText.setText("");
-                    for (int i = 0; i < gradeLevelsContainer.getChildCount(); i++) {
-                        View child = gradeLevelsContainer.getChildAt(i);
-                        if (child instanceof CheckBox) {
-                            ((CheckBox) child).setChecked(false);
+            String checkUrl = "http://10.0.2.2/Android/check_course_exists.php?course_name=" + finalCourseNameEncoded
+                    + "&class_id=" + selectedClassId
+                    + "&grade_level=" + finalGradeId;
+
+            RequestQueue queue = Volley.newRequestQueue(this);
+
+            StringRequest checkRequest = new StringRequest(Request.Method.GET, checkUrl,
+                    checkResponse -> {
+                        if ("EXISTS".equals(checkResponse.trim())) {
+                            Toast.makeText(AddCourseActivity.this, "This course is already exists", Toast.LENGTH_SHORT).show();
+                        } else {
+                            String url = "http://10.0.2.2/Android/add_course.php";
+                            StringBuilder postData = new StringBuilder();
+                            postData.append("course_name=").append(finalCourseNameEncoded);
+                            postData.append("&grade_levels[]=").append(finalGradeId);
+                            postData.append("&class_teacher_links[0][class_id]=").append(selectedClassId);
+                            postData.append("&class_teacher_links[0][teacher_id]=").append(selectedTeacherId);
+
+                            StringRequest addRequest = new StringRequest(Request.Method.POST, url,
+                                    response -> {
+                                        Toast.makeText(AddCourseActivity.this, "Course added successfully", Toast.LENGTH_SHORT).show();
+                                        addedAnyCourse[0] = true;
+                                        requestsCount[0]--;
+                                        if (requestsCount[0] == 0) {
+                                            clearFormData();
+                                            courseNameEditText.setText("");
+                                            for (int i = 0; i < gradeLevelsContainer.getChildCount(); i++) {
+                                                View child = gradeLevelsContainer.getChildAt(i);
+                                                if (child instanceof CheckBox) {
+                                                    ((CheckBox) child).setChecked(false);
+                                                }
+                                            }
+                                            if (classSpinner.getAdapter() != null && classSpinner.getAdapter().getCount() > 0) {
+                                                classSpinner.setSelection(0);
+                                            }
+                                            if (teacherSpinner.getAdapter() != null && teacherSpinner.getAdapter().getCount() > 0) {
+                                                teacherSpinner.setSelection(0);
+                                            }
+                                        }
+                                    },
+                                    error -> {
+                                        Toast.makeText(AddCourseActivity.this, "Failed to add course", Toast.LENGTH_SHORT).show();
+                                        requestsCount[0]--;
+                                        if (requestsCount[0] == 0) {
+                                            clearFormData();
+                                            courseNameEditText.setText("");
+                                            for (int i = 0; i < gradeLevelsContainer.getChildCount(); i++) {
+                                                View child = gradeLevelsContainer.getChildAt(i);
+                                                if (child instanceof CheckBox) {
+                                                    ((CheckBox) child).setChecked(false);
+                                                }
+                                            }
+                                            if (classSpinner.getAdapter() != null && classSpinner.getAdapter().getCount() > 0) {
+                                                classSpinner.setSelection(0);
+                                            }
+                                            if (teacherSpinner.getAdapter() != null && teacherSpinner.getAdapter().getCount() > 0) {
+                                                teacherSpinner.setSelection(0);
+                                            }
+                                        }
+                                    }) {
+                                @Override
+                                public byte[] getBody() {
+                                    return postData.toString().getBytes(StandardCharsets.UTF_8);
+                                }
+                                @Override
+                                public String getBodyContentType() {
+                                    return "application/x-www-form-urlencoded; charset=UTF-8";
+                                }
+                            };
+                            queue.add(addRequest);
+                            return;
+                        }
+                        requestsCount[0]--;
+                        if (requestsCount[0] == 0 && !addedAnyCourse[0]) {
+                            clearFormData();
+                            courseNameEditText.setText("");
+                            for (int i = 0; i < gradeLevelsContainer.getChildCount(); i++) {
+                                View child = gradeLevelsContainer.getChildAt(i);
+                                if (child instanceof CheckBox) {
+                                    ((CheckBox) child).setChecked(false);
+                                }
+                            }
+                            if (classSpinner.getAdapter() != null && classSpinner.getAdapter().getCount() > 0) {
+                                classSpinner.setSelection(0);
+                            }
+                            if (teacherSpinner.getAdapter() != null && teacherSpinner.getAdapter().getCount() > 0) {
+                                teacherSpinner.setSelection(0);
+                            }
+                        }
+                    },
+                    error -> {
+                        Toast.makeText(AddCourseActivity.this, "فشل التحقق من وجود الكورس", Toast.LENGTH_SHORT).show();
+                        requestsCount[0]--;
+                        if (requestsCount[0] == 0 && !addedAnyCourse[0]) {
+                            clearFormData();
+                            courseNameEditText.setText("");
+                            for (int i = 0; i < gradeLevelsContainer.getChildCount(); i++) {
+                                View child = gradeLevelsContainer.getChildAt(i);
+                                if (child instanceof CheckBox) {
+                                    ((CheckBox) child).setChecked(false);
+                                }
+                            }
+                            if (classSpinner.getAdapter() != null && classSpinner.getAdapter().getCount() > 0) {
+                                classSpinner.setSelection(0);
+                            }
+                            if (teacherSpinner.getAdapter() != null && teacherSpinner.getAdapter().getCount() > 0) {
+                                teacherSpinner.setSelection(0);
+                            }
                         }
                     }
-                    if (classSpinner.getAdapter() != null && classSpinner.getAdapter().getCount() > 0) {
-                        classSpinner.setSelection(0);
-                    }
-                    if (teacherSpinner.getAdapter() != null && teacherSpinner.getAdapter().getCount() > 0) {
-                        teacherSpinner.setSelection(0);
-                    }
-                },
-                error -> Toast.makeText(AddCourseActivity.this, "Failed to add course", Toast.LENGTH_SHORT).show()) {
-            @Override
-            public byte[] getBody() {
-                return postData.toString().getBytes();
-            }
-            @Override
-            public String getBodyContentType() {
-                return "application/x-www-form-urlencoded; charset=UTF-8";
-            }
-        };
-        queue.add(stringRequest);
+            );
+            queue.add(checkRequest);
+        }
     }
+
+
 
     private void loadFormData() {
         courseNameEditText.setText(prefs.getString("course_name", ""));
